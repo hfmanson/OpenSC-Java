@@ -1,6 +1,6 @@
 /***********************************************************
  * $Id$
- * 
+ *
  * PKCS#15 cryptographic provider of the opensc project.
  * http://www.opensc-project.org
  *
@@ -17,7 +17,7 @@
  * limitations under the License.
  *
  * Created: 31.12.2007
- * 
+ *
  ***********************************************************/
 
 package org.opensc.pkcs15.asn1.sequence;
@@ -32,7 +32,7 @@ import org.opensc.pkcs15.asn1.proxy.StreamResolver;
 
 /**
  * An adapter for using a StreamResolver as a Directory for sequences.
- * 
+ *
  * @author wglas
  */
 public class SequenceOfStreamResolverDirectory<ReferenceType extends DEREncodable, EntityType extends DEREncodable>
@@ -40,17 +40,17 @@ implements Directory<ReferenceType, SequenceOf<EntityType>> {
 
     private final StreamResolver<ReferenceType> streamResolver;
     private final SequenceOfFactory<EntityType> sequenceOfFactory;
-    
+
     public SequenceOfStreamResolverDirectory(StreamResolver<ReferenceType> streamResolver,
             Class<Object> clazz) {
-        
+
         this.streamResolver = streamResolver;
         this.sequenceOfFactory = new SequenceOfFactory<EntityType>(clazz);
     }
 
     public SequenceOfStreamResolverDirectory(StreamResolver<ReferenceType> streamResolver,
             SequenceOfFactory<EntityType> sequenceOfFactory) {
-        
+
         this.streamResolver = streamResolver;
         this.sequenceOfFactory = sequenceOfFactory;
     }
@@ -60,34 +60,36 @@ implements Directory<ReferenceType, SequenceOf<EntityType>> {
      */
     @Override
     public SequenceOf<EntityType> resolveReference(ReferenceType ref) {
-       
+
         try {
-            
+
             InputStream is = this.streamResolver.readReference(ref);
-            
-            return this.sequenceOfFactory.readInstance(is);
-            
+            SequenceOf<EntityType> result = this.sequenceOfFactory.readInstance(is);
+            is.close();
+            return result;
+
         } catch (IOException e) {
             throw new IllegalArgumentException("Reference ["+ref+"] cannot be read.",e);
         }
     }
-    
+
     /* (non-Javadoc)
      * @see org.opensc.pkcs15.asn1.Directory#updateEntity(org.bouncycastle.asn1.DEREncodable, org.bouncycastle.asn1.DEREncodable)
      */
     @Override
     public void updateEntity(ReferenceType ref, SequenceOf<EntityType> entity) {
-        
+
         try {
             OutputStream os = this.streamResolver.writeReference(ref);
-        
+
             this.sequenceOfFactory.writeInstance(os,entity);
+            os.close();
 
         } catch (IOException e) {
             throw new IllegalArgumentException("Reference ["+ref+"] cannot be written.",e);
         }
     }
-    
+
     /**
      * @return the streamResolver
      */

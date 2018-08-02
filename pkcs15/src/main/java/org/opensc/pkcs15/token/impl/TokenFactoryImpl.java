@@ -1,6 +1,6 @@
 /***********************************************************
  * $Id$
- * 
+ *
  * PKCS#15 cryptographic provider of the opensc project.
  * http://www.opensc-project.org
  *
@@ -17,7 +17,7 @@
  * limitations under the License.
  *
  * Created: 26.12.2007
- * 
+ *
  ***********************************************************/
 
 package org.opensc.pkcs15.token.impl;
@@ -43,12 +43,15 @@ public class TokenFactoryImpl extends TokenFactory {
      */
     @Override
     public Token newHardwareToken(Card card) throws IOException {
-        
+
         ATR atr = card.getATR();
-        
+
         if (CardOSToken.CARDOS_4_3_b_ATR.equals(atr))
             return new CardOSToken(card.getBasicChannel());
-            
+
+        if (IsoAppletToken.ISOAPPLET_ATR.equals(atr))
+            return new IsoAppletToken(card.getBasicChannel());
+
         throw new IOException("Card has an unrecognized ATR ["+Util.asHex(atr.getBytes())+"].");
     }
 
@@ -57,7 +60,7 @@ public class TokenFactoryImpl extends TokenFactory {
      */
     @Override
     public Token newSoftwareToken(File file) throws IOException {
-        
+
         return new SoftwareToken(file);
     }
 

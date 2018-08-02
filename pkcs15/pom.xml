@@ -5,7 +5,7 @@
   <artifactId>pkcs15</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <description>Tools for handling Siemens' CardOS Smart Cards</description>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -34,6 +34,7 @@
           <excludes>
             <exclude>**/TestHardwareToken.java</exclude>
             <exclude>**/TestCSFScripts.java</exclude>
+            <exclude>**/TestSoftwareToken.java</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -66,7 +67,7 @@
   <repositories>
     <repository>
       <id>clazzes.org-repository</id>
-      <name>clazzes.org repository</name> 
+      <name>clazzes.org repository</name>
       <url>http://maven.clazzes.org</url>
     </repository>
    </repositories>
