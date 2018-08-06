@@ -24,6 +24,7 @@ import javax.smartcardio.ResponseAPDU;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensc.pkcs15.PKCS15CardException;
+import org.opensc.pkcs15.PKCS15Exception;
 import org.opensc.pkcs15.script.Command;
 import org.opensc.pkcs15.script.ScriptParser;
 import org.opensc.pkcs15.script.ScriptParserFactory;
@@ -125,7 +126,7 @@ public class IsoAppletToken implements Token {
     public DF createDF(int path, long size, DFAcl acl) throws IOException {
 
         if (size < 0 || size > 65535L)
-            throw new PKCS15CardException("Illegal size ["+size+"] for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
+            throw new PKCS15Exception("Illegal size ["+size+"] for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -181,7 +182,7 @@ public class IsoAppletToken implements Token {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
             if (resp.getSW() != PKCS15CardException.ERROR_OK)
-                throw new PKCS15CardException("CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+                throw new PKCS15Exception("CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
             throw new PKCS15CardException("Error sending CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
@@ -197,7 +198,7 @@ public class IsoAppletToken implements Token {
     public EF createEF(int path, long size, EFAcl acl) throws IOException {
 
         if (size < 0 || size > 65535L)
-            throw new PKCS15CardException("Illegal size ["+size+"] for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
+            throw new PKCS15Exception("Illegal size ["+size+"] for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -254,7 +255,7 @@ public class IsoAppletToken implements Token {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
             if (resp.getSW() != PKCS15CardException.ERROR_OK)
-                throw new PKCS15CardException("CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+                throw new PKCS15Exception("CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
             throw new PKCS15CardException("Error sending CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
@@ -276,7 +277,7 @@ public class IsoAppletToken implements Token {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
             if (resp.getSW() != PKCS15CardException.ERROR_OK)
-                throw new PKCS15CardException("DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+                throw new PKCS15Exception("DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
             throw new PKCS15CardException("Error sending DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
@@ -296,7 +297,7 @@ public class IsoAppletToken implements Token {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
             if (resp.getSW() != PKCS15CardException.ERROR_OK)
-                throw new PKCS15CardException("DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+                throw new PKCS15Exception("DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
             throw new PKCS15CardException("Error sending DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
@@ -337,7 +338,7 @@ public class IsoAppletToken implements Token {
     private DataInputStream getSelectFileData(ResponseAPDU resp) throws IOException
     {
         if (resp.getSW() != PKCS15CardException.ERROR_OK)
-            throw new PKCS15CardException("Card error in response to SELECT FILE",resp.getSW());
+            throw new PKCS15Exception("Card error in response to SELECT FILE",resp.getSW());
 
         if (resp.getNr() < 2)
             throw new IOException("response to SELECT FILE contains less than 2 bytes.");
@@ -752,7 +753,7 @@ public class IsoAppletToken implements Token {
             if (this.size() == this.lastFlushPos) return;
 
             if (!this.pathToWrite.equals(IsoAppletToken.this.currentFile.getPath()))
-                throw new PKCS15CardException("Path changed before writing content to EF ["+this.pathToWrite+"].",PKCS15CardException.ERROR_TECHNICAL_ERROR);
+                throw new PKCS15Exception("Path changed before writing content to EF ["+this.pathToWrite+"].",PKCS15CardException.ERROR_TECHNICAL_ERROR);
 
             super.close();
 
@@ -763,7 +764,7 @@ public class IsoAppletToken implements Token {
                 ResponseAPDU resp = IsoAppletToken.this.channel.transmit(cmd);
 
                 if (resp.getSW() != PKCS15CardException.ERROR_OK)
-                    throw new PKCS15CardException("UPDATE BINARY for EF ["+this.pathToWrite+"] returned error",resp.getSW());
+                    throw new PKCS15Exception("UPDATE BINARY for EF ["+this.pathToWrite+"] returned error",resp.getSW());
 
                 this.lastFlushPos = this.size();
 
