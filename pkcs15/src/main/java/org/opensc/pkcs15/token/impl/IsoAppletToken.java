@@ -126,7 +126,7 @@ public class IsoAppletToken implements Token {
     public DF createDF(int path, long size, DFAcl acl) throws IOException {
 
         if (size < 0 || size > 65535L)
-            throw new PKCS15Exception("Illegal size ["+size+"] for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
+            throw new PKCS15Exception("Illegal size ["+size+"] for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15Exception.ERROR_INVALID_PARAMETER);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -181,7 +181,7 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+            if (resp.getSW() != PKCS15Exception.ERROR_OK)
                 throw new PKCS15Exception("CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
@@ -198,7 +198,7 @@ public class IsoAppletToken implements Token {
     public EF createEF(int path, long size, EFAcl acl) throws IOException {
 
         if (size < 0 || size > 65535L)
-            throw new PKCS15Exception("Illegal size ["+size+"] for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
+            throw new PKCS15Exception("Illegal size ["+size+"] for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15Exception.ERROR_INVALID_PARAMETER);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -254,7 +254,7 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+            if (resp.getSW() != PKCS15Exception.ERROR_OK)
                 throw new PKCS15Exception("CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
@@ -276,7 +276,7 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+            if (resp.getSW() != PKCS15Exception.ERROR_OK)
                 throw new PKCS15Exception("DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
@@ -296,7 +296,7 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+            if (resp.getSW() != PKCS15Exception.ERROR_OK)
                 throw new PKCS15Exception("DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
@@ -337,7 +337,7 @@ public class IsoAppletToken implements Token {
 
     private DataInputStream getSelectFileData(ResponseAPDU resp) throws IOException
     {
-        if (resp.getSW() != PKCS15CardException.ERROR_OK)
+        if (resp.getSW() != PKCS15Exception.ERROR_OK)
             throw new PKCS15Exception("Card error in response to SELECT FILE",resp.getSW());
 
         if (resp.getNr() < 2)
@@ -753,7 +753,7 @@ public class IsoAppletToken implements Token {
             if (this.size() == this.lastFlushPos) return;
 
             if (!this.pathToWrite.equals(IsoAppletToken.this.currentFile.getPath()))
-                throw new PKCS15Exception("Path changed before writing content to EF ["+this.pathToWrite+"].",PKCS15CardException.ERROR_TECHNICAL_ERROR);
+                throw new PKCS15Exception("Path changed before writing content to EF ["+this.pathToWrite+"].",PKCS15Exception.ERROR_TECHNICAL_ERROR);
 
             super.close();
 
@@ -763,7 +763,7 @@ public class IsoAppletToken implements Token {
             try {
                 ResponseAPDU resp = IsoAppletToken.this.channel.transmit(cmd);
 
-                if (resp.getSW() != PKCS15CardException.ERROR_OK)
+                if (resp.getSW() != PKCS15Exception.ERROR_OK)
                     throw new PKCS15Exception("UPDATE BINARY for EF ["+this.pathToWrite+"] returned error",resp.getSW());
 
                 this.lastFlushPos = this.size();
