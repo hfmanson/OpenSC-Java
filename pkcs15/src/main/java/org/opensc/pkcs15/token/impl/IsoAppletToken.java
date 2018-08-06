@@ -23,7 +23,7 @@ import javax.smartcardio.ResponseAPDU;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opensc.pkcs15.PKCS15Exception;
+import org.opensc.pkcs15.PKCS15CardException;
 import org.opensc.pkcs15.script.Command;
 import org.opensc.pkcs15.script.ScriptParser;
 import org.opensc.pkcs15.script.ScriptParserFactory;
@@ -102,7 +102,7 @@ public class IsoAppletToken implements Token {
 //                cmd = cmd.execute(this.channel);
 //            }
 //        } catch (CardException e) {
-//            throw new PKCS15Exception("Error executing reset script ["+res+"].",e);
+//            throw new PKCS15CardException("Error executing reset script ["+res+"].",e);
 //        }
     }
 
@@ -114,7 +114,7 @@ public class IsoAppletToken implements Token {
         try {
             this.channel.close();
         } catch (CardException e) {
-            throw new PKCS15Exception("Error closing card",e);
+            throw new PKCS15CardException("Error closing card",e);
         }
     }
 
@@ -125,7 +125,7 @@ public class IsoAppletToken implements Token {
     public DF createDF(int path, long size, DFAcl acl) throws IOException {
 
         if (size < 0 || size > 65535L)
-            throw new PKCS15Exception("Illegal size ["+size+"] for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15Exception.ERROR_INVALID_PARAMETER);
+            throw new PKCS15CardException("Illegal size ["+size+"] for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -180,11 +180,11 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15Exception.ERROR_OK)
-                throw new PKCS15Exception("CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+                throw new PKCS15CardException("CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
+            throw new PKCS15CardException("Error sending CREATE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
         }
 
         return new DF(new TokenPath(this.currentFile.getPath(),path),size,acl);
@@ -197,7 +197,7 @@ public class IsoAppletToken implements Token {
     public EF createEF(int path, long size, EFAcl acl) throws IOException {
 
         if (size < 0 || size > 65535L)
-            throw new PKCS15Exception("Illegal size ["+size+"] for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15Exception.ERROR_INVALID_PARAMETER);
+            throw new PKCS15CardException("Illegal size ["+size+"] for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"].",PKCS15CardException.ERROR_INVALID_PARAMETER);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream(256);
         DataOutputStream dos = new DataOutputStream(bos);
@@ -253,11 +253,11 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15Exception.ERROR_OK)
-                throw new PKCS15Exception("CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+                throw new PKCS15CardException("CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
+            throw new PKCS15CardException("Error sending CREATE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
         }
 
         return new EF(new TokenPath(this.currentFile.getPath(),path),size,acl);
@@ -275,11 +275,11 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15Exception.ERROR_OK)
-                throw new PKCS15Exception("DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+                throw new PKCS15CardException("DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
+            throw new PKCS15CardException("Error sending DELETE FILE for DF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
         }
     }
 
@@ -295,11 +295,11 @@ public class IsoAppletToken implements Token {
         try {
             ResponseAPDU resp = this.channel.transmit(cmd);
 
-            if (resp.getSW() != PKCS15Exception.ERROR_OK)
-                throw new PKCS15Exception("DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
+            if (resp.getSW() != PKCS15CardException.ERROR_OK)
+                throw new PKCS15CardException("DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"] returned error",resp.getSW());
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
+            throw new PKCS15CardException("Error sending DELETE FILE for EF ["+PathHelper.formatPathAppend(this.currentFile.getPath(),path)+"]",e);
         }
     }
 
@@ -330,14 +330,14 @@ public class IsoAppletToken implements Token {
             return new ByteArrayInputStream(resp.getData());
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending READ BINARY",e);
+            throw new PKCS15CardException("Error sending READ BINARY",e);
         }
     }
 
     private DataInputStream getSelectFileData(ResponseAPDU resp) throws IOException
     {
-        if (resp.getSW() != PKCS15Exception.ERROR_OK)
-            throw new PKCS15Exception("Card error in response to SELECT FILE",resp.getSW());
+        if (resp.getSW() != PKCS15CardException.ERROR_OK)
+            throw new PKCS15CardException("Card error in response to SELECT FILE",resp.getSW());
 
         if (resp.getNr() < 2)
             throw new IOException("response to SELECT FILE contains less than 2 bytes.");
@@ -453,7 +453,7 @@ public class IsoAppletToken implements Token {
             return this.currentFile;
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending SELECT FILE",e);
+            throw new PKCS15CardException("Error sending SELECT FILE",e);
         }
     }
 
@@ -529,7 +529,7 @@ public class IsoAppletToken implements Token {
              return df;
 
          } catch (CardException e) {
-             throw new PKCS15Exception("Error sending select MF",e);
+             throw new PKCS15CardException("Error sending select MF",e);
          }
      }
 
@@ -632,7 +632,7 @@ public class IsoAppletToken implements Token {
             return ef;
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending select MF",e);
+            throw new PKCS15CardException("Error sending select MF",e);
         }
    }
 
@@ -718,7 +718,7 @@ public class IsoAppletToken implements Token {
             return mf;
 
         } catch (CardException e) {
-            throw new PKCS15Exception("Error sending select MF",e);
+            throw new PKCS15CardException("Error sending select MF",e);
         }
     }
 
@@ -752,7 +752,7 @@ public class IsoAppletToken implements Token {
             if (this.size() == this.lastFlushPos) return;
 
             if (!this.pathToWrite.equals(IsoAppletToken.this.currentFile.getPath()))
-                throw new PKCS15Exception("Path changed before writing content to EF ["+this.pathToWrite+"].",PKCS15Exception.ERROR_TECHNICAL_ERROR);
+                throw new PKCS15CardException("Path changed before writing content to EF ["+this.pathToWrite+"].",PKCS15CardException.ERROR_TECHNICAL_ERROR);
 
             super.close();
 
@@ -762,13 +762,13 @@ public class IsoAppletToken implements Token {
             try {
                 ResponseAPDU resp = IsoAppletToken.this.channel.transmit(cmd);
 
-                if (resp.getSW() != PKCS15Exception.ERROR_OK)
-                    throw new PKCS15Exception("UPDATE BINARY for EF ["+this.pathToWrite+"] returned error",resp.getSW());
+                if (resp.getSW() != PKCS15CardException.ERROR_OK)
+                    throw new PKCS15CardException("UPDATE BINARY for EF ["+this.pathToWrite+"] returned error",resp.getSW());
 
                 this.lastFlushPos = this.size();
 
             } catch (CardException e) {
-                throw new PKCS15Exception("Error sending UPDATE BINARY for EF ["+this.pathToWrite+"]",e);
+                throw new PKCS15CardException("Error sending UPDATE BINARY for EF ["+this.pathToWrite+"]",e);
             }
         }
 

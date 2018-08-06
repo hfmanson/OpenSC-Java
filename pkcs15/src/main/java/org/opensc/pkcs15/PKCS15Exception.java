@@ -138,7 +138,7 @@ public class PKCS15Exception extends IOException {
      * @param msg The error message.
      * @param cause The card exception raised by the JAVA smartcard API.
      */
-    public PKCS15Exception(String msg, Throwable cause) {
+    protected PKCS15Exception(String msg, Throwable cause) {
         super(msg,cause);
         this.errorCode = ERROR_TRANSPORT_ERROR;
     }
