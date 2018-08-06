@@ -70,6 +70,6 @@ public class TestSurfnetToken extends HardwareCardSupport {
         PKCS15Objects objs = PKCS15Objects.readInstance(token.readEFData(),new TokenContext(token));
         testAuthObject(objs);
         //testPublicKeys(objs);
-        //testCertificates(objs);
+        testCertificates(objs);
     }
 }
