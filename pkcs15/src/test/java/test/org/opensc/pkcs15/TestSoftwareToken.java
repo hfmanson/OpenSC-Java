@@ -29,6 +29,7 @@ import org.opensc.pkcs15.asn1.PKCS15Certificate;
 import org.opensc.pkcs15.asn1.PKCS15Objects;
 import org.opensc.pkcs15.asn1.PKCS15PrivateKey;
 import org.opensc.pkcs15.asn1.PKCS15PublicKey;
+import org.opensc.pkcs15.asn1.PKCS15RSAPrivateKey;
 import org.opensc.pkcs15.asn1.PKCS15RSAPublicKey;
 import org.opensc.pkcs15.asn1.attr.CertificateObject;
 import org.opensc.pkcs15.asn1.attr.PublicKeyObject;
@@ -167,6 +168,8 @@ public class TestSoftwareToken extends TestCase {
 
         List<PKCS15PrivateKey> privateKeys = objs.getPrivateKeys().getSequence();
         assertEquals(1,privateKeys.size());
+//        PKCS15RSAPrivateKey privKey = (PKCS15RSAPrivateKey) privateKeys.get(0);
+//        log.info("privKey.algorithm=" + privKey.getPrivateRSAKeyAttributes().getValue().getAlgorithm());
 
         List<PKCS15PublicKey> publicKeys = objs.getPublicKeys().getSequence();
         assertEquals(1,publicKeys.size());
